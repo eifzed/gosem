@@ -100,6 +100,13 @@ Calls the function
 func (s *Semaphore) Call(args ...interface{})
 ```
 
+#### `Wait`
+
+Waits all workers to finish executing the function
+```go
+func (s *Semaphore) Wait()
+```
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
