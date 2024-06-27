@@ -8,21 +8,31 @@ import (
 	"time"
 )
 
-func (w *Worker) SetFunc(function interface{}) error {
+var (
+	ErrInvalidFunction    = errors.New("parameter should be a type of function")
+	ErrUnsetFunction      = errors.New("Set() function must be used prior to using Call() function")
+	ErrMismatchParameters = errors.New("the number of parameters does not match the function signature")
+	// ErrTimeout            = errors.New("the number of parameters does not match the function signature")
+)
+
+// SetFunc sets the function to be executed
+func (w *Semaphore) SetFunc(function interface{}) error {
 	fn := reflect.ValueOf(function)
 	if fn.Kind() != reflect.Func {
-		return errors.New("paramter should be a function")
+		return ErrInvalidFunction
 	}
 	w.fn = fn
 	return nil
 }
 
-func (w *Worker) Call(params ...interface{}) error {
+// SetFunc calls the function.
+// Must use SetFunc() first before using this function
+func (w *Semaphore) Call(params ...interface{}) error {
 	if !w.fn.IsValid() {
-		return errors.New("function must be set prior to using Call() by using the Set() function")
+		return ErrUnsetFunction
 	}
 	if len(params) != w.fn.Type().NumIn() {
-		return errors.New("The number of parameters does not match the function signature")
+		return ErrMismatchParameters
 	}
 	args := make([]reflect.Value, len(params))
 	for i, param := range params {
@@ -36,8 +46,7 @@ func (w *Worker) Call(params ...interface{}) error {
 	return nil
 }
 
-func (w *Worker) execute(args ...reflect.Value) {
-
+func (w *Semaphore) execute(args ...reflect.Value) {
 	defer func() {
 		<-w.semaphoreChannel
 	}()
@@ -55,7 +64,7 @@ func (w *Worker) execute(args ...reflect.Value) {
 
 }
 
-func (w *Worker) doCall(ctx context.Context, args ...reflect.Value) {
+func (w *Semaphore) doCall(ctx context.Context, args ...reflect.Value) {
 	if w.hasPanicHandler {
 		defer w.panicHandler()
 	}

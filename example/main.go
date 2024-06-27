@@ -8,18 +8,22 @@ import (
 )
 
 func main() {
-	worker := gosem.NewWorker(gosem.WithMaxWorker(2), gosem.WithTimeout(5), gosem.WithPanicHandler(panicHandler))
-	worker.SetFunc(Foo)
+	semaphore := gosem.NewSemaphore(gosem.WithMaxWorker(2), gosem.WithTimeout(5), gosem.WithPanicHandler(panicHandler))
+	semaphore.SetFunc(Foo) // setting the function
 
+	// a list of dummy data to be processed
 	data := [][]int{{0, 1}, {1, 3}, {2, 10}, {3, 1}}
 
 	for _, d := range data {
-		err := worker.Call(d[0], d[1])
+		err := semaphore.Call(d[0], d[1])
 		if err != nil {
 			fmt.Println(err.Error())
 		}
 	}
 
+	semaphore.Close()
+
+	// do other things
 }
 func panicHandler() {
 	if r := recover(); r != nil {

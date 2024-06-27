@@ -1,21 +1,25 @@
 package gosem
 
-func NewWorker(opts ...OptFunc) *Worker {
-	w := defaultOpts()
+func NewSemaphore(opts ...OptFunc) *Semaphore {
+	s := defaultOpts()
 
 	for _, fn := range opts {
-		fn(w)
+		fn(s)
 	}
 
-	return w
+	return s
 }
 
-func (w *Worker) SetPanicHandler(fn func()) {
-	w.hasPanicHandler = true
-	w.panicHandler = fn
+func (s *Semaphore) SetPanicHandler(fn func()) {
+	s.hasPanicHandler = true
+	s.panicHandler = fn
 }
 
-func (w *Worker) SetTimeout(timeoutSecond uint) {
-	w.hasTimeout = true
-	w.timeoutSecond = timeoutSecond
+func (s *Semaphore) SetTimeout(timeoutSecond uint) {
+	s.hasTimeout = true
+	s.timeoutSecond = timeoutSecond
+}
+
+func (s *Semaphore) Close() {
+	close(s.semaphoreChannel)
 }

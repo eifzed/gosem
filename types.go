@@ -1,10 +1,12 @@
 package gosem
 
-import "reflect"
+import (
+	"reflect"
+)
 
-type OptFunc func(*Worker)
+type OptFunc func(*Semaphore)
 
-type Worker struct {
+type Semaphore struct {
 	fn               reflect.Value
 	semaphoreChannel chan struct{}
 	timeoutSecond    uint
