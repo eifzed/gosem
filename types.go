@@ -2,6 +2,7 @@ package gosem
 
 import (
 	"reflect"
+	"sync"
 )
 
 type OptFunc func(*Semaphore)
@@ -14,4 +15,5 @@ type Semaphore struct {
 	panicHandler     func()
 	hasPanicHandler  bool
 	workerCount      uint
+	wg               *sync.WaitGroup
 }

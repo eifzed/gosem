@@ -20,6 +20,6 @@ func (s *Semaphore) SetTimeout(timeoutSecond uint) {
 	s.timeoutSecond = timeoutSecond
 }
 
-func (s *Semaphore) Close() {
-	close(s.semaphoreChannel)
+func (s *Semaphore) Wait() {
+	s.wg.Wait()
 }

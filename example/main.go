@@ -21,7 +21,8 @@ func main() {
 		}
 	}
 
-	semaphore.Close()
+	// waits all workers to finish
+	semaphore.Wait()
 
 	// do other things
 }
@@ -35,5 +36,9 @@ func Foo(id int, delaySecond int) error {
 	fmt.Println("start id", id, "delay", delaySecond, "second")
 	time.Sleep(time.Duration(delaySecond) * time.Second)
 	fmt.Println("end id", id)
+	if id == 3 {
+		// dummy panic
+		panic("abc")
+	}
 	return nil
 }

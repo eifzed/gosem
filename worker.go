@@ -39,6 +39,7 @@ func (w *Semaphore) Call(params ...interface{}) error {
 		args[i] = reflect.ValueOf(param)
 	}
 
+	w.wg.Add(1)
 	w.semaphoreChannel <- struct{}{}
 
 	go w.execute(args...)
@@ -49,6 +50,7 @@ func (w *Semaphore) Call(params ...interface{}) error {
 func (w *Semaphore) execute(args ...reflect.Value) {
 	defer func() {
 		<-w.semaphoreChannel
+		w.wg.Done()
 	}()
 
 	var ctx context.Context

@@ -1,6 +1,9 @@
 package gosem
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 // defaultOpts set default options for the semaphore
 // does not use timeout, max worker is set to 2
@@ -9,6 +12,7 @@ func defaultOpts() *Semaphore {
 		hasTimeout:       false,
 		semaphoreChannel: make(chan struct{}, 2),
 		timeoutSecond:    0,
+		wg:               &sync.WaitGroup{},
 	}
 }
 

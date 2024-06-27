@@ -34,8 +34,9 @@ import (
 
 func main() {
 	semaphore := gosem.NewSemaphore(gosem.WithMaxWorker(2), gosem.WithTimeout(5), gosem.WithPanicHandler(panicHandler))
-	semaphore.SetFunc(Foo)
+	semaphore.SetFunc(Foo) // setting the function
 
+	// a list of dummy data to be processed
 	data := [][]int{{0, 1}, {1, 3}, {2, 10}, {3, 1}}
 
 	for _, d := range data {
@@ -45,10 +46,10 @@ func main() {
 		}
 	}
 
-	semaphore.Close()
+	// waits all workers to finish
+	semaphore.Wait()
 
 	// do other things
-
 }
 func panicHandler() {
 	if r := recover(); r != nil {
@@ -60,8 +61,13 @@ func Foo(id int, delaySecond int) error {
 	fmt.Println("start id", id, "delay", delaySecond, "second")
 	time.Sleep(time.Duration(delaySecond) * time.Second)
 	fmt.Println("end id", id)
+	if id == 3 {
+		// dummy panic
+		panic("abc")
+	}
 	return nil
 }
+
 
 
 
