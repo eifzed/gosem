@@ -8,7 +8,6 @@
 - Control the number of concurrently running goroutines.
 - Control the timeout for each worker.
 - Set a default or custom Panic handler
-- Capture and handle errors from concurrent tasks.
 
 ## Installation
 
